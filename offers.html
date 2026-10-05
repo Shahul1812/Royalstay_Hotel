@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Offers | Royal Stay</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#151210;
+  --ink-2:#211b17;
+  --paper:#f5f1e9;
+  --paper-2:#e9e0d2;
+  --gold:#c99b5a;
+  --gold-light:#e2c08a;
+  --muted:#776e65;
+  --line:rgba(32,25,20,.13);
+  --white:#fff;
+  --shadow:0 30px 80px rgba(25,17,10,.14);
+  --ease:cubic-bezier(.22,1,.36,1);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:"DM Sans",sans-serif;
+  background:var(--paper);
+  color:var(--ink);
+  overflow-x:hidden;
+}
+body.is-loading{overflow:hidden}
+::selection{background:var(--gold);color:var(--ink)}
+a{text-decoration:none;color:inherit}
+img{display:block;max-width:100%}
+button,input,select,textarea{font:inherit}
+
+.preloader{
+  position:fixed;inset:0;background:#0d0c0b;color:white;z-index:9999;
+  display:grid;place-items:center;transition:opacity .7s ease,visibility .7s ease;
+}
+.preloader.hide{opacity:0;visibility:hidden}
+.loader-inner{text-align:center}
+.loader-mark{
+  width:72px;height:72px;border:1px solid rgba(201,155,90,.45);border-radius:50%;
+  display:grid;place-items:center;margin:0 auto 22px;position:relative;
+}
+.loader-mark:before{
+  content:"";width:40px;height:40px;border:1px solid var(--gold);border-radius:50%;
+  border-top-color:transparent;animation:spin 1.1s linear infinite;
+}
+.loader-mark span{position:absolute;font-family:"Playfair Display";font-size:18px;color:var(--gold)}
+.loader-inner p{font-size:10px;letter-spacing:5px;color:#bdb4aa}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+.cursor{
+  position:fixed;width:18px;height:18px;border:1px solid var(--gold);border-radius:50%;
+  pointer-events:none;z-index:10000;transform:translate(-50%,-50%);
+  transition:width .25s,height .25s,background .25s,opacity .25s;mix-blend-mode:difference;
+}
+.cursor.big{width:62px;height:62px;background:rgba(201,155,90,.18)}
+@media(max-width:900px){.cursor{display:none}}
+
+.navbar{
+  position:fixed;top:0;left:0;width:100%;height:88px;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;padding:0 6.5%;
+  color:#fff;transition:background .45s ease,backdrop-filter .45s ease,height .45s ease;
+}
+.navbar.scrolled{
+  height:72px;background:rgba(13,12,11,.84);backdrop-filter:blur(18px);
+  border-bottom:1px solid rgba(255,255,255,.08);
+}
+.logo{font-family:"Playfair Display",serif;font-size:22px;letter-spacing:3px}
+.logo span{color:var(--gold)}
+.nav-links{display:flex;gap:31px;align-items:center}
+.nav-links a{font-size:12px;letter-spacing:.8px;color:#f0ece7;position:relative;padding:8px 0}
+.nav-links a:after{
+  content:"";position:absolute;left:0;bottom:0;width:0;height:1px;background:var(--gold);
+  transition:width .35s var(--ease)
+}
+.nav-links a:hover:after{width:100%}
+.nav-cta{
+  padding:12px 20px;border:1px solid rgba(255,255,255,.35);border-radius:999px;
+  font-size:12px;transition:.35s var(--ease)
+}
+.nav-cta:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.menu-btn{display:none;background:none;border:0;color:white;font-size:24px}
+
+.hero{
+  min-height:100vh;position:relative;display:flex;align-items:center;padding:150px 8% 90px;
+  color:#fff;overflow:hidden;background:#111;
+}
+.hero-bg{
+  position:absolute;inset:-5%;background:
+  linear-gradient(90deg,rgba(8,7,6,.82) 0%,rgba(8,7,6,.48) 48%,rgba(8,7,6,.18) 100%),
+  url("https://images.unsplash.com/photo-1564501049412-61c2a3083791?auto=format&fit=crop&w=2400&q=90") center/cover;
+  transform:scale(1.08);will-change:transform;
+}
+.hero:after{
+  content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.2),transparent 35%,rgba(0,0,0,.5));
+  pointer-events:none;
+}
+.hero-content{position:relative;z-index:2;max-width:900px}
+.eyebrow{
+  font-size:10px;letter-spacing:4px;font-weight:700;color:var(--gold-light);
+  margin-bottom:24px;text-transform:uppercase
+}
+.hero h1{
+  font-family:"Playfair Display",serif;font-weight:500;font-size:clamp(58px,8.2vw,126px);
+  line-height:.87;letter-spacing:-3px;margin-bottom:32px
+}
+.hero h1 .line{display:block;overflow:hidden}
+.hero h1 .line span{display:block;transform:translateY(110%)}
+.hero h1 em{font-style:normal;color:var(--gold-light)}
+.hero-copy{
+  max-width:590px;color:rgba(255,255,255,.8);font-size:17px;line-height:1.85;margin-bottom:38px;
+  opacity:0;transform:translateY(24px)
+}
+.hero-actions{display:flex;gap:13px;opacity:0;transform:translateY(24px)}
+.btn{
+  position:relative;display:inline-flex;align-items:center;justify-content:center;gap:12px;
+  padding:15px 23px;border-radius:999px;font-weight:700;font-size:12px;overflow:hidden;
+  transition:transform .35s var(--ease),box-shadow .35s var(--ease)
+}
+.btn span{position:relative;z-index:2}
+.btn-gold{background:var(--gold);color:var(--ink);box-shadow:0 12px 35px rgba(201,155,90,.2)}
+.btn-gold:before{content:"";position:absolute;inset:0;background:var(--gold-light);transform:translateY(100%);transition:transform .4s var(--ease)}
+.btn-gold:hover:before{transform:translateY(0)}
+.btn-outline{border:1px solid rgba(255,255,255,.42);color:#fff}
+.btn-outline:hover{background:rgba(255,255,255,.1)}
+.btn:hover{transform:translateY(-3px)}
+.hero-scroll{
+  position:absolute;bottom:35px;right:7%;z-index:3;display:flex;align-items:center;gap:14px;
+  font-size:9px;letter-spacing:3px;color:rgba(255,255,255,.7);writing-mode:vertical-rl
+}
+.scroll-line{width:1px;height:70px;background:linear-gradient(var(--gold),transparent);animation:scrollLine 2s infinite}
+@keyframes scrollLine{0%,100%{transform:scaleY(.35);transform-origin:top}50%{transform:scaleY(1);transform-origin:top}}
+
+.trust-strip{
+  background:#151210;color:#d7d0c8;padding:18px 8%;display:grid;grid-template-columns:repeat(4,1fr);
+  border-top:1px solid rgba(255,255,255,.07);border-bottom:1px solid rgba(255,255,255,.07)
+}
+.trust-item{display:flex;justify-content:center;align-items:center;gap:12px;border-right:1px solid rgba(255,255,255,.08)}
+.trust-item:last-child{border:0}
+.trust-item strong{font-family:"Playfair Display";font-size:20px;color:var(--gold-light)}
+.trust-item span{font-size:10px;letter-spacing:1px;color:#a9a198}
+
+.intro{
+  padding:135px 8%;display:grid;grid-template-columns:1fr 1.1fr;gap:10%;align-items:end;
+  background:var(--paper);position:relative
+}
+.intro:before{content:"RS";position:absolute;right:5%;top:20px;font:700 220px/1 "Playfair Display";color:rgba(30,24,19,.035)}
+.kicker{font-size:10px;letter-spacing:4px;font-weight:700;color:#a2763d;margin-bottom:20px}
+.display{font-family:"Playfair Display",serif;font-weight:500;font-size:clamp(42px,5.2vw,72px);line-height:1.02;letter-spacing:-1.5px}
+.intro-text{font-size:19px;line-height:1.9;color:var(--muted);max-width:680px}
+.gold-rule{width:70px;height:1px;background:var(--gold);margin:27px 0}
+
+.section{padding:125px 8%}
+.dark-section{background:var(--ink);color:white}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;gap:50px;margin-bottom:55px}
+.section-head p:last-child{max-width:420px;color:var(--muted);line-height:1.75;font-size:14px}
+.dark-section .section-head p:last-child{color:#aaa29b}
+.section-title{font-family:"Playfair Display";font-size:clamp(42px,5vw,68px);font-weight:500;line-height:1}
+
+.room-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
+.room-card{background:#fff;box-shadow:var(--shadow);overflow:hidden;transition:transform .65s var(--ease),box-shadow .65s var(--ease)}
+.room-card:hover{transform:translateY(-10px);box-shadow:0 35px 90px rgba(25,17,10,.2)}
+.room-media{height:390px;position:relative;overflow:hidden}
+.room-media img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease)}
+.room-card:hover .room-media img{transform:scale(1.08)}
+.room-badge{
+  position:absolute;left:18px;top:18px;padding:8px 11px;background:rgba(15,12,9,.72);
+  color:#fff;backdrop-filter:blur(8px);font-size:9px;letter-spacing:2px
+}
+.room-info{padding:27px}
+.room-title{display:flex;justify-content:space-between;gap:18px;align-items:start}
+.room-title h3{font-family:"Playfair Display";font-size:28px;font-weight:600}
+.price{color:#9b703d;font-weight:700;white-space:nowrap}
+.price small{color:#837b73;font-weight:400;font-size:10px}
+.room-info p{color:var(--muted);line-height:1.65;font-size:13px;margin:15px 0 20px}
+.features{display:flex;flex-wrap:wrap;gap:7px;padding-bottom:21px;border-bottom:1px solid var(--line)}
+.features span{font-size:9px;letter-spacing:.7px;padding:7px 9px;border:1px solid #ddd4c8;color:#635a52}
+.room-link{display:flex;justify-content:space-between;align-items:center;margin-top:17px;color:#9b703d;font-weight:700;font-size:11px}
+.arrow{transition:transform .3s}.room-link:hover .arrow{transform:translateX(5px)}
+
+.experience{
+  padding:125px 8%;background:var(--paper-2);display:grid;grid-template-columns:1.03fr .97fr;
+  gap:8%;align-items:center;overflow:hidden
+}
+.experience-media{position:relative;height:690px;overflow:hidden}
+.experience-media img{width:100%;height:100%;object-fit:cover}
+.experience-media:after{content:"";position:absolute;inset:20px;border:1px solid rgba(255,255,255,.35);pointer-events:none}
+.float-card{
+  position:absolute;z-index:2;right:-22px;bottom:30px;background:#fff;padding:22px 25px;
+  box-shadow:0 18px 50px rgba(28,20,12,.18);min-width:210px
+}
+.float-card strong{display:block;font:600 34px "Playfair Display";color:#9b703d}
+.float-card span{font-size:10px;letter-spacing:1px;color:#756c64}
+.amenity-list{display:grid;grid-template-columns:1fr 1fr;gap:0 30px;margin-top:48px}
+.amenity{padding:22px 0;border-top:1px solid #c6b9a8}
+.amenity span{font-size:9px;letter-spacing:2px;color:#a2763d}
+.amenity h3{font:600 21px "Playfair Display";margin:8px 0}
+.amenity p{font-size:12px;line-height:1.65;color:var(--muted)}
+
+.stats{
+  display:grid;grid-template-columns:repeat(4,1fr);background:#171411;color:white;
+  padding:70px 8%;gap:20px
+}
+.stat{text-align:center;border-right:1px solid rgba(255,255,255,.08)}
+.stat:last-child{border:0}
+.stat strong{font:500 55px "Playfair Display";color:var(--gold-light);display:block}
+.stat span{font-size:9px;letter-spacing:2px;color:#9d958d;text-transform:uppercase}
+
+.gallery{padding:125px 8%;background:var(--paper)}
+.gallery-grid{display:grid;grid-template-columns:2fr 1fr 1fr;grid-template-rows:310px 310px;gap:14px}
+.gallery-item{position:relative;overflow:hidden;cursor:pointer}
+.gallery-item img{width:100%;height:100%;object-fit:cover;transition:transform 1s var(--ease),filter 1s}
+.gallery-item:hover img{transform:scale(1.08);filter:saturate(1.08)}
+.gallery-item:first-child{grid-row:span 2}
+.gallery-label{
+  position:absolute;left:20px;bottom:20px;color:#fff;font-size:10px;letter-spacing:2px;
+  opacity:0;transform:translateY(10px);transition:.45s var(--ease);text-shadow:0 2px 12px #000
+}
+.gallery-item:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 45%,rgba(0,0,0,.6));opacity:0;transition:.45s}
+.gallery-item:hover:after,.gallery-item:hover .gallery-label{opacity:1}
+.gallery-item .gallery-label{z-index:2}
+
+.booking{
+  padding:125px 8%;background:#211c18;color:white;display:grid;grid-template-columns:.82fr 1.18fr;
+  gap:9%;position:relative;overflow:hidden
+}
+.booking:before{content:"";position:absolute;width:520px;height:520px;border-radius:50%;right:-240px;top:-240px;background:radial-gradient(circle,rgba(201,155,90,.16),transparent 65%)}
+.booking-copy{position:relative;z-index:1}
+.booking-copy .display{color:white}
+.booking-copy>p:not(.kicker){max-width:480px;color:#c5bdb5;line-height:1.8;margin-top:25px}
+.contact-details{margin-top:42px;display:grid;gap:12px;color:#d6cec5;font-size:13px}
+.booking-form{background:var(--paper);color:var(--ink);padding:38px;position:relative;z-index:2;box-shadow:0 30px 90px rgba(0,0,0,.24)}
+.booking-form h3{font:600 32px "Playfair Display";margin-bottom:25px}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label{display:block;font-size:10px;font-weight:700;letter-spacing:.6px;margin-bottom:17px}
+input,select,textarea{
+  width:100%;margin-top:8px;border:1px solid #d8cec1;background:white;padding:14px;
+  outline:none;font-size:13px;transition:border .25s,box-shadow .25s
+}
+input:focus,select:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,155,90,.12)}
+textarea{resize:vertical;min-height:110px}
+.submit-btn{
+  width:100%;border:0;background:var(--ink);color:white;padding:17px;border-radius:999px;
+  cursor:pointer;font-weight:700;font-size:11px;letter-spacing:.5px;transition:.35s var(--ease)
+}
+.submit-btn:hover{background:var(--gold);color:var(--ink);transform:translateY(-2px)}
+.form-note{min-height:22px;margin-top:14px;font-size:12px;color:#4f7a51}
+
+footer{
+  background:#0d0c0b;color:#fff;padding:42px 8%;display:flex;justify-content:space-between;
+  align-items:center;gap:20px
+}
+footer p{font-size:10px;color:#8e8881;letter-spacing:.5px}
+
+.reveal{opacity:0;transform:translateY(45px)}
+.reveal-left{opacity:0;transform:translateX(-45px)}
+.reveal-scale{opacity:0;transform:scale(.94)}
+
+@media(max-width:1050px){
+  .nav-links{display:none}.menu-btn{display:block}
+  .room-grid{grid-template-columns:1fr 1fr}.room-media{height:330px}
+  .experience,.booking{grid-template-columns:1fr}
+  .experience-media{height:560px}.booking{gap:55px}
+}
+@media(max-width:700px){
+  .navbar{padding:0 5%;height:74px}
+  .nav-cta{display:none}
+  .hero{padding:135px 6% 90px;min-height:760px}
+  .hero h1{font-size:58px;letter-spacing:-2px}
+  .hero-copy{font-size:15px}
+  .trust-strip{grid-template-columns:1fr 1fr;padding:18px 5%;gap:18px}
+  .trust-item:nth-child(2){border:0}.trust-item:nth-child(3){border:0}
+  .intro,.section,.experience,.gallery,.booking{padding:80px 6%}
+  .intro{grid-template-columns:1fr;gap:35px}
+  .section-head{display:block}.section-head p:last-child{margin-top:20px}
+  .room-grid{grid-template-columns:1fr}
+  .room-media{height:340px}
+  .experience-media{height:470px}.float-card{right:12px}
+  .amenity-list{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr;padding:55px 6%}
+  .stat{border:0}.stat strong{font-size:43px}
+  .gallery-grid{grid-template-columns:1fr 1fr;grid-template-rows:220px 220px 220px}
+  .gallery-item:first-child{grid-row:span 1}
+  .gallery-item:first-child{grid-column:span 2}
+  .form-row{grid-template-columns:1fr}
+  .booking-form{padding:25px}
+  footer{flex-direction:column;text-align:center;padding:32px 6%}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*:before,*:after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+
+/* Multi-page professional navigation */
+.page-shell{min-height:100vh}
+.nav-links a.active{color:#e2c08a}
+.mobile-panel{position:fixed;inset:0;background:rgba(13,12,11,.98);z-index:99;display:none;padding:120px 8% 40px}
+.mobile-panel.open{display:block}
+.mobile-panel a{display:block;color:#fff;font:500 34px "Playfair Display";padding:17px 0;border-bottom:1px solid rgba(255,255,255,.08)}
+.page-hero{min-height:62vh;padding:170px 8% 90px;display:flex;align-items:flex-end;position:relative;overflow:hidden;color:#fff;background:#14110e}
+.page-hero-bg{position:absolute;inset:0;background:center/cover no-repeat;transform:scale(1.04)}
+.page-hero:after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(8,7,6,.78),rgba(8,7,6,.28)),linear-gradient(0deg,rgba(8,7,6,.62),transparent 60%)}
+.page-hero-content{position:relative;z-index:2;max-width:850px}
+.page-hero h1{font:500 clamp(52px,7vw,100px)/.92 "Playfair Display";letter-spacing:-2px}
+.page-hero p{max-width:650px;color:#d6cec5;line-height:1.8;margin-top:24px}
+.feature-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feature-card{background:#fff;padding:34px;min-height:230px;border:1px solid rgba(30,22,16,.08);transition:.5s cubic-bezier(.22,1,.36,1)}
+.feature-card:hover{transform:translateY(-8px);box-shadow:0 25px 70px rgba(30,22,16,.12)}
+.feature-icon{font-size:25px;color:#b1844b;margin-bottom:28px}
+.feature-card h3{font:600 25px "Playfair Display";margin-bottom:10px}
+.feature-card p{font-size:13px;color:#746b63;line-height:1.7}
+.offer-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}
+.offer{padding:45px;background:#211c18;color:#fff;position:relative;overflow:hidden}
+.offer:after{content:"";position:absolute;width:220px;height:220px;border-radius:50%;right:-90px;top:-100px;background:rgba(201,155,90,.12)}
+.offer h3{font:500 34px "Playfair Display";margin-bottom:12px}
+.offer p{color:#c9c0b7;line-height:1.7;font-size:13px;max-width:500px}
+.offer .tag{display:inline-block;margin-bottom:20px;color:#e2c08a;font-size:9px;letter-spacing:3px}
+.contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:25px}
+.contact-card{padding:35px;background:#eee6da}
+.contact-card h3{font:600 25px "Playfair Display";margin-bottom:12px}
+.contact-card p{font-size:13px;color:#6f675f;line-height:1.8}
+.breadcrumb{font-size:10px;letter-spacing:2px;color:#d9b77f;margin-bottom:20px}
+@media(max-width:800px){
+  .feature-grid,.offer-grid,.contact-grid{grid-template-columns:1fr}
+  .page-hero{min-height:70vh;padding:145px 6% 70px}
+}
+</style></head><body>
+<header class="navbar" id="navbar">
+  <a class="logo" href="index.html">ROYAL <span>STAY</span></a>
+  <nav class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="rooms.html">Rooms & Suites</a>
+    <a href="experience.html">Experience</a>
+    <a href="offers.html" class="active">Offers</a>
+    <a href="gallery.html">Gallery</a>
+    <a href="contact.html">Contact</a>
+  </nav>
+  <a href="booking.html" class="nav-cta magnetic">Reserve a room</a>
+  <button class="menu-btn" aria-label="Open navigation" onclick="document.getElementById('mobilePanel').classList.toggle('open')">☰</button>
+</header>
+<div class="mobile-panel" id="mobilePanel">
+  <a href="index.html">Home</a><a href="rooms.html">Rooms & Suites</a><a href="experience.html">Experience</a>
+  <a href="offers.html" class="active">Offers</a><a href="gallery.html">Gallery</a><a href="contact.html">Contact</a><a href="booking.html">Reservations</a>
+</div>
+<main>
+<section class="page-hero"><div class="page-hero-bg" style="background:linear-gradient(90deg,rgba(8,7,6,.8),rgba(8,7,6,.25)),url('assets/royal-fallback.svg') center/cover"></div><div class="page-hero-content"><p class="breadcrumb">ROYAL STAY / OFFERS</p><h1>More reasons<br>to stay longer.</h1><p>Thoughtful packages built around weekends, celebrations and extended escapes.</p></div></section>
+<section class="section"><div class="offer-grid">
+<div class="offer reveal"><span class="tag">WEEKEND ESCAPE</span><h3>Stay two nights, slow down properly.</h3><p>Make the most of a weekend with breakfast, late checkout and a curated local experience.</p><br><a href="booking.html" class="room-link">Enquire now →</a></div>
+<div class="offer reveal"><span class="tag">LONG STAY</span><h3>More nights. More ease.</h3><p>Designed for guests staying longer, with flexible arrangements and added comforts.</p><br><a href="booking.html" class="room-link">Enquire now →</a></div>
+<div class="offer reveal"><span class="tag">CELEBRATIONS</span><h3>Make the occasion memorable.</h3><p>Tell our team what you are celebrating and we will help shape the details.</p><br><a href="booking.html" class="room-link">Plan a celebration →</a></div>
+<div class="offer reveal"><span class="tag">BUSINESS</span><h3>Work well. Rest better.</h3><p>Quiet rooms, fast Wi-Fi, breakfast and a dedicated workspace for productive stays.</p><br><a href="booking.html" class="room-link">Plan a business stay →</a></div>
+</div></section>
+</main>
+<footer><div class="logo">ROYAL <span>STAY</span></div><p>Comfort. Elegance. Hospitality.</p><p>© 2026 Royal Stay Hotel</p></footer>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const preloader = document.getElementById("preloader");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  const init = () => {
+    document.body.classList.remove("is-loading");
+    preloader.classList.add("hide");
+
+    if (reduceMotion || !window.gsap) {
+      document.querySelectorAll(".hero h1 .line span,.hero-copy,.hero-actions").forEach(el=>{
+        el.style.opacity="1"; el.style.transform="none";
+      });
+      document.querySelectorAll(".reveal,.reveal-left,.reveal-scale").forEach(el=>{
+        el.style.opacity="1"; el.style.transform="none";
+      });
+      return;
+    }
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    const tl = gsap.timeline({defaults:{ease:"power4.out"}});
+    tl.to(".hero h1 .line span",{y:0,duration:1.15,stagger:.12})
+      .to(".hero-copy",{opacity:1,y:0,duration:.8},"-=.55")
+      .to(".hero-actions",{opacity:1,y:0,duration:.8},"-=.55");
+
+    gsap.to("#heroBg",{yPercent:8,scale:1.14,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:1.2}});
+
+    gsap.utils.toArray(".reveal").forEach(el=>{
+      gsap.to(el,{opacity:1,y:0,duration:1,scrollTrigger:{trigger:el,start:"top 86%",once:true}});
+    });
+    gsap.utils.toArray(".reveal-left").forEach(el=>{
+      gsap.to(el,{opacity:1,x:0,duration:1.05,scrollTrigger:{trigger:el,start:"top 86%",once:true}});
+    });
+    gsap.utils.toArray(".reveal-scale").forEach((el,i)=>{
+      gsap.to(el,{opacity:1,scale:1,duration:.95,delay:i*.06,scrollTrigger:{trigger:el,start:"top 90%",once:true}});
+    });
+
+    document.querySelectorAll("[data-count]").forEach(el=>{
+      const target=Number(el.dataset.count);
+      ScrollTrigger.create({
+        trigger:el,start:"top 85%",once:true,
+        onEnter:()=>{
+          const obj={n:0};
+          gsap.to(obj,{n:target,duration:1.6,ease:"power2.out",onUpdate:()=>el.textContent=Math.round(obj.n)+(target===97?"%":"+")});
+        }
+      });
+    });
+  };
+
+  if (document.readyState === "complete") setTimeout(init,350);
+  else window.addEventListener("load",()=>setTimeout(init,350),{once:true});
+
+  const nav=document.getElementById("navbar");
+  window.addEventListener("scroll",()=>nav.classList.toggle("scrolled",window.scrollY>30),{passive:true});
+
+  // Cursor + magnetic micro-interactions
+  const cursor=document.getElementById("cursor");
+  if (cursor && !reduceMotion && window.matchMedia("(pointer:fine)").matches){
+    window.addEventListener("pointermove",e=>{
+      cursor.style.left=e.clientX+"px";cursor.style.top=e.clientY+"px";
+    });
+    document.querySelectorAll("a,button,.room-card,.gallery-item").forEach(el=>{
+      el.addEventListener("mouseenter",()=>cursor.classList.add("big"));
+      el.addEventListener("mouseleave",()=>cursor.classList.remove("big"));
+    });
+    document.querySelectorAll(".magnetic").forEach(el=>{
+      el.addEventListener("mousemove",e=>{
+        const r=el.getBoundingClientRect();
+        const x=(e.clientX-r.left-r.width/2)*.16, y=(e.clientY-r.top-r.height/2)*.16;
+        el.style.transform=`translate(${x}px,${y}px)`;
+      });
+      el.addEventListener("mouseleave",()=>el.style.transform="translate(0,0)");
+    });
+  }
+
+  // Room enquiry preselect
+  document.querySelectorAll("[data-room]").forEach(link=>{
+    link.addEventListener("click",()=>{
+      const select=document.getElementById("room");
+      if(select) select.value=link.dataset.room;
+    });
+  });
+
+  // Booking date guard
+  const checkin=document.getElementById("checkin"), checkout=document.getElementById("checkout");
+  const today=new Date().toISOString().split("T")[0];
+  checkin.min=today; checkout.min=today;
+  checkin.addEventListener("change",()=>checkout.min=checkin.value);
+
+  document.getElementById("bookingForm").addEventListener("submit",e=>{
+    e.preventDefault();
+    const name=document.getElementById("name").value.trim();
+    const room=document.getElementById("room").value;
+    const msg=document.getElementById("formMessage");
+    msg.textContent=`Thank you, ${name}. Your enquiry for the ${room} has been received. Our reservations team will contact you shortly.`;
+  });
+});
+
+
+document.querySelectorAll("img[data-fallback]").forEach(img=>{
+  img.addEventListener("error",()=>{
+    if(img.dataset.fallbackUsed) return;
+    img.dataset.fallbackUsed="1";
+    img.src=img.dataset.fallback;
+  });
+});
+document.querySelectorAll(".page-hero-bg[data-fallback]").forEach(el=>{
+  const preload=new Image();
+  preload.onerror=()=>el.style.backgroundImage=`url("${el.dataset.fallback}")`;
+  preload.src=el.dataset.remote;
+});
+</script></body></html>
